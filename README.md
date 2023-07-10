@@ -45,4 +45,21 @@ Configure the environment variables:
 npm run build
 ```
 
+## GraphQL
+
+### Queries
+
+- `search(query: String!, filters: SearchFilters, pagination: PaginationInput): SearchResult`: Retrieves search results based on the provided query string and optional filters and pagination.
+- `getSearchResult(id: ID!): SearchResult`: Retrieves a specific search result by its unique identifier.
+- `getUserSearchHistory(userId: ID!): [SearchHistory]`: Retrieves the search history of a specific user.
+- `getPopularSearches: [String]`: Retrieves a list of popular search terms or queries.
+
+### Mutations
+
+- `createUserSearchHistory(userId: ID!, query: String!): SearchHistory`: Creates a new search history entry for a user with the provided query string.
+- `clearUserSearchHistory(userId: ID!): Boolean`: Clears the search history of a specific user.
+- `createSearchResult(title: String!, url: String!, description: String!): SearchResult`: Creates a new search result with the provided title, URL, and description.
+- `updateSearchResult(id: ID!, title: String, url: String, description: String): SearchResult`: Updates an existing search result identified by its unique identifier with the provided fields.
+- `deleteSearchResult(id: ID!): Boolean`: Deletes a search result identified by its unique identifier.
+
 Copyright 2023, Max Base
