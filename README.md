@@ -24,8 +24,8 @@ This is a search engine site built using TypeScript and NestJS, with a GraphQL A
 Clone the repository:
 
 ```shell
-git clone https://github.com/your-username/search-engine.git
-cd search-engine
+https://github.com/BaseMax/GoogleCloneGraphQLTS
+cd GoogleCloneGraphQLTS
 ```
 
 Install the dependencies:
