@@ -62,4 +62,127 @@ npm run build
 - `updateSearchResult(id: ID!, title: String, url: String, description: String): SearchResult`: Updates an existing search result identified by its unique identifier with the provided fields.
 - `deleteSearchResult(id: ID!): Boolean`: Deletes a search result identified by its unique identifier.
 
+## GraphQL Examples
+
+### search(query: String!, filters: SearchFilters, pagination: PaginationInput): SearchResult
+
+Example usage:
+
+```graphql
+query {
+  search(query: "cat videos", filters: { category: "videos" }, pagination: { page: 1, limit: 10 }) {
+    totalCount
+    results {
+      id
+      title
+      url
+      description
+    }
+  }
+}
+```
+
+### getSearchResult(id: ID!): SearchResult
+
+Example usage:
+
+```graphql
+query {
+  getSearchResult(id: "abc123") {
+    id
+    title
+    url
+    description
+  }
+}
+```
+
+### getUserSearchHistory(userId: ID!): [SearchHistory]
+
+Example usage:
+
+```graphql
+query {
+  getUserSearchHistory(userId: "user123") {
+    id
+    query
+    createdAt
+  }
+}
+```
+
+### getPopularSearches: [String]
+
+Example usage:
+
+```graphql
+query {
+  getPopularSearches
+}
+```
+
+### createUserSearchHistory(userId: ID!, query: String!): SearchHistory
+
+Example usage:
+
+```graphql
+mutation {
+  createUserSearchHistory(userId: "user123", query: "kittens") {
+    id
+    query
+    createdAt
+  }
+}
+```
+
+### clearUserSearchHistory(userId: ID!): Boolean
+
+Example usage:
+
+```graphql
+mutation {
+  clearUserSearchHistory(userId: "user123")
+}
+```
+
+### createSearchResult(title: String!, url: String!, description: String!): SearchResult
+
+Example usage:
+
+```graphql
+mutation {
+  createSearchResult(title: "Funny Cat Videos", url: "https://example.com/videos", description: "Watch hilarious cat videos!") {
+    id
+    title
+    url
+    description
+  }
+}
+```
+
+### updateSearchResult(id: ID!, title: String, url: String, description: String): SearchResult
+
+Example usage:
+
+```graphql
+mutation {
+  updateSearchResult(id: "abc123", title: "New Title") {
+    id
+    title
+    url
+    description
+  }
+}
+```
+
+### deleteSearchResult(id: ID!): Boolean
+
+Example usage:
+
+```graphql
+mutation {
+  deleteSearchResult(id: "abc123")
+}
+```
+
 Copyright 2023, Max Base
