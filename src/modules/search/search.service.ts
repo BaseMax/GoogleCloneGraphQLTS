@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PaginationInput } from './dto/PaginationInput.dto';
 import { SearchFilters } from './dto/SearchFilters.dto';
 import { SearchResult } from './dto/SearchResult.dto';
 import { SearchHistory } from './dto/SearchHistory.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+import { filter } from 'rxjs';
+import { contains } from 'class-validator';
 
 @Injectable()
 export class SearchService {
@@ -16,6 +19,36 @@ export class SearchService {
     const page = pagination.page;
     const perPage = pagination.perPage;
     const offset = (page - 1) * perPage;
+    const where: Prisma.SearchResultWhereInput = {};
+
+    if (filters.dateRange) {
+      where.createdAt = {
+        gte: filters.dateRange.from,
+        lte: filters.dateRange.to,
+      };
+    }
+    if (filters.priceRange) {
+      where.price = {
+        gte: filters.priceRange.from,
+        lte: filters.priceRange.to,
+      };
+    }
+    if (filters.category) {
+      where.category = filters.category;
+    }
+    if (filters.location) {
+      where.location = filters.location;
+    }
+    if (filters.rating) {
+      where.rating = filters.rating;
+    }
+    where.description = {
+      contains: query,
+    };
+    where.title = {
+      contains: query,
+    };
+
     const searchResults = await this.prismaService.searchResult.findMany({
       where: {
         description: {
@@ -52,33 +85,59 @@ export class SearchService {
   }
 
   async getPopularSearch(): Promise<SearchResult[]> {
-    let a : SearchResult[] =[];
-    return a;
+    const mostPopularSearchResults =
+      await this.prismaService.searchResult.findMany({
+        take: 20,
+        orderBy: {
+          count: 'desc',
+        },
+      });
+    return mostPopularSearchResults;
   }
 
   async createUserSearchHistory(
     userId: number,
     query: string,
   ): Promise<SearchHistory> {
-    let a: SearchHistory;
-    return a;
+    const foundUser = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (foundUser) {
+      throw new BadRequestException('no user with this id found');
+    }
+    const createdSearchHistory = await this.prismaService.searchHistory.create({
+      data: {
+        userId: userId,
+        query: query,
+      },
+    });
+    return createdSearchHistory;
   }
 
   async clearUserSearchHistory(userId: number): Promise<Boolean> {
-    let a: Boolean;
-    return a;
+    const userFound = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    const updatedUser = await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        searchHistory: { set: [] },
+      },
+    });
+    if (updatedUser) return true;
+    return false;
   }
 
-  async createSearchResult(
-    title: string,
-    url: string,
-    description: string,
-  ): Promise<SearchResult> {
+  async createSearchResult(input: SearchResult): Promise<SearchResult> {
     const createdSearch = await this.prismaService.searchResult.create({
       data: {
-        title: title,
-        url: url,
-        description: description,
+        ...input,
       },
     });
     return createdSearch;
@@ -95,7 +154,12 @@ export class SearchService {
   }
 
   async deleteSearchResult(id: number): Promise<Boolean> {
-    let a: Boolean;
-    return a;
+    const deletedSearchResult = await this.prismaService.searchResult.delete({
+      where: {
+        id: id,
+      },
+    });
+    if (deletedSearchResult) return true;
+    return false;
   }
 }
