@@ -13,6 +13,10 @@ datasource db {
 
 model User {
   id            Int             @id @default(autoincrement())
+  name          String
+  phonenumber   String
+  email         String
+  username      String
   searchHistory SearchHistory[]
 }
 
@@ -30,7 +34,7 @@ model SearchResult {
   url         String
   description String
   count       Int      @default(0)
-  rating      Int?      @default(0)
+  rating      Int?     @default(0)
   location    String?
   category    String?
   price       Int?

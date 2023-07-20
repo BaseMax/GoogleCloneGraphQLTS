@@ -5,12 +5,15 @@ import { SearchResult } from './dto/SearchResult.dto';
 import { SearchHistory } from './dto/SearchHistory.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { filter } from 'rxjs';
-import { contains } from 'class-validator';
+import { CreateSearchResult } from './dto/createSearchResult.dto';
+import { ElasticsearchService } from '../elastic/elastic.service';
 
 @Injectable()
 export class SearchService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private elasticService: ElasticsearchService,
+  ) {}
   async search(
     query: string,
     filters: SearchFilters,
@@ -48,7 +51,6 @@ export class SearchService {
     where.title = {
       contains: query,
     };
-
     const searchResults = await this.prismaService.searchResult.findMany({
       where: {
         description: {
@@ -61,6 +63,16 @@ export class SearchService {
       skip: offset,
       take: perPage,
     });
+    // const queryEls = {
+    //   match: {
+    //     content: query,
+    //   },
+    // };
+    // const searchRes = await this.elasticService.searchDocuments(
+    //   'search_res_index',
+    //   queryEls,
+    // );
+    // console.log('res: ', searchRes);
     //filters and pagination did not included
     return searchResults;
   }
@@ -69,6 +81,9 @@ export class SearchService {
     const searchResult = await this.prismaService.searchResult.findUnique({
       where: { id: id },
     });
+    if (!searchResult) {
+      throw new BadRequestException('there was no search result with this id');
+    }
     return searchResult;
   }
 
@@ -81,6 +96,9 @@ export class SearchService {
         searchHistory: true,
       },
     });
+    if(!foundUser){
+      throw new BadRequestException('user with this id didnot found')
+    }
     return foundUser.searchHistory;
   }
 
@@ -104,7 +122,7 @@ export class SearchService {
         id: userId,
       },
     });
-    if (foundUser) {
+    if (!foundUser) {
       throw new BadRequestException('no user with this id found');
     }
     const createdSearchHistory = await this.prismaService.searchHistory.create({
@@ -122,6 +140,15 @@ export class SearchService {
         id: userId,
       },
     });
+    if (!userFound) {
+      throw new BadRequestException('user with this id did not found');
+    }
+    const deletedSearchHistory =
+      await this.prismaService.searchHistory.deleteMany({
+        where: {
+          userId: userId,
+        },
+      });
     const updatedUser = await this.prismaService.user.update({
       where: {
         id: userId,
@@ -134,12 +161,17 @@ export class SearchService {
     return false;
   }
 
-  async createSearchResult(input: SearchResult): Promise<SearchResult> {
+  async createSearchResult(input: CreateSearchResult): Promise<SearchResult> {
     const createdSearch = await this.prismaService.searchResult.create({
       data: {
         ...input,
       },
     });
+    // const indexName = 'search_res_index';
+    // const elasticDoc = {
+    //   ...input,
+    // };
+    // this.elasticService.indexDocument(indexName, elasticDoc);
     return createdSearch;
   }
 
@@ -153,13 +185,21 @@ export class SearchService {
     return updatedSearchResult;
   }
 
-  async deleteSearchResult(id: number): Promise<Boolean> {
+  async deleteSearchResult(id: number): Promise<Boolean | SearchResult> {
+    const foundSearchResult = await this.prismaService.searchResult.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!foundSearchResult) {
+      throw new BadRequestException('there was no searchResult with that id');
+    }
     const deletedSearchResult = await this.prismaService.searchResult.delete({
       where: {
         id: id,
       },
     });
-    if (deletedSearchResult) return true;
+    if (deletedSearchResult) return foundSearchResult;
     return false;
   }
 }

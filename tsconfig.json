@@ -17,6 +17,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["node", "@nestjs/graphql"]
+    "types": ["node", "@nestjs/graphql" , "jest"]
   }
 }
