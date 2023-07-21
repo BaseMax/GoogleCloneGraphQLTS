@@ -1,188 +1,73 @@
-# Search Engine Site (GraphQL-based) in TypeScript and NestJS
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-This is a search engine site built using TypeScript and NestJS, with a GraphQL API. The application allows users to search for content and retrieve relevant results. It utilizes the power of GraphQL for efficient querying and retrieving data from various sources.
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## Features
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-- Search for content using keywords or phrases
-- Retrieve relevant search results based on the query
-- Support for advanced search filters and sorting options
-- Pagination for browsing through search results
-- Integration with various data sources for retrieving content
-- Full-text search capabilities for accurate and fast results
-- User authentication and authorization for personalized search experiences
+## Description
 
-## Requirements
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-- Node.js (v12 or above)
-- TypeScript (v4 or above)
-- NestJS (v8 or above)
-- MongoDB or any other supported database for data storage
+## Installation
 
-## Getting Started
-
-Clone the repository:
-
-```shell
-https://github.com/BaseMax/GoogleCloneGraphQLTS
-cd GoogleCloneGraphQLTS
+```bash
+$ npm install
 ```
 
-Install the dependencies:
+## Running the app
 
-```shell
-npm install
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
 ```
 
-Configure the environment variables:
+## Test
 
-- Rename the .env.example file to `.env`.
-- Modify the values in the .env file according to your setup.
-- Ensure you provide the necessary credentials and configurations for the database.
-- Build the application:
+```bash
+# unit tests
+$ npm run test
 
-```shell
-npm run build
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 ```
 
-## GraphQL
+## Support
 
-### Queries
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-- `search(query: String!, filters: SearchFilters, pagination: PaginationInput): SearchResult`: Retrieves search results based on the provided query string and optional filters and pagination.
-- `getSearchResult(id: ID!): SearchResult`: Retrieves a specific search result by its unique identifier.
-- `getUserSearchHistory(userId: ID!): [SearchHistory]`: Retrieves the search history of a specific user.
-- `getPopularSearches: [String]`: Retrieves a list of popular search terms or queries.
+## Stay in touch
 
-### Mutations
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-- `createUserSearchHistory(userId: ID!, query: String!): SearchHistory`: Creates a new search history entry for a user with the provided query string.
-- `clearUserSearchHistory(userId: ID!): Boolean`: Clears the search history of a specific user.
-- `createSearchResult(title: String!, url: String!, description: String!): SearchResult`: Creates a new search result with the provided title, URL, and description.
-- `updateSearchResult(id: ID!, title: String, url: String, description: String): SearchResult`: Updates an existing search result identified by its unique identifier with the provided fields.
-- `deleteSearchResult(id: ID!): Boolean`: Deletes a search result identified by its unique identifier.
+## License
 
-## GraphQL Examples
-
-### search(query: String!, filters: SearchFilters, pagination: PaginationInput): SearchResult
-
-Example usage:
-
-```graphql
-query {
-  search(query: "cat videos", filters: { category: "videos" }, pagination: { page: 1, limit: 10 }) {
-    totalCount
-    results {
-      id
-      title
-      url
-      description
-    }
-  }
-}
-```
-
-### getSearchResult(id: ID!): SearchResult
-
-Example usage:
-
-```graphql
-query {
-  getSearchResult(id: "abc123") {
-    id
-    title
-    url
-    description
-  }
-}
-```
-
-### getUserSearchHistory(userId: ID!): [SearchHistory]
-
-Example usage:
-
-```graphql
-query {
-  getUserSearchHistory(userId: "user123") {
-    id
-    query
-    createdAt
-  }
-}
-```
-
-### getPopularSearches: [String]
-
-Example usage:
-
-```graphql
-query {
-  getPopularSearches
-}
-```
-
-### createUserSearchHistory(userId: ID!, query: String!): SearchHistory
-
-Example usage:
-
-```graphql
-mutation {
-  createUserSearchHistory(userId: "user123", query: "kittens") {
-    id
-    query
-    createdAt
-  }
-}
-```
-
-### clearUserSearchHistory(userId: ID!): Boolean
-
-Example usage:
-
-```graphql
-mutation {
-  clearUserSearchHistory(userId: "user123")
-}
-```
-
-### createSearchResult(title: String!, url: String!, description: String!): SearchResult
-
-Example usage:
-
-```graphql
-mutation {
-  createSearchResult(title: "Funny Cat Videos", url: "https://example.com/videos", description: "Watch hilarious cat videos!") {
-    id
-    title
-    url
-    description
-  }
-}
-```
-
-### updateSearchResult(id: ID!, title: String, url: String, description: String): SearchResult
-
-Example usage:
-
-```graphql
-mutation {
-  updateSearchResult(id: "abc123", title: "New Title") {
-    id
-    title
-    url
-    description
-  }
-}
-```
-
-### deleteSearchResult(id: ID!): Boolean
-
-Example usage:
-
-```graphql
-mutation {
-  deleteSearchResult(id: "abc123")
-}
-```
-
-Copyright 2023, Max Base
+Nest is [MIT licensed](LICENSE).
