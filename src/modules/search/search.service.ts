@@ -4,7 +4,6 @@ import { SearchFilters } from './dto/SearchFilters.dto';
 import { SearchResult } from './dto/SearchResult.dto';
 import { SearchHistory } from './dto/SearchHistory.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { UpdateSearchResult } from './dto/UpdateSearchResult.dto';
 
 @Injectable()
 export class SearchService {
@@ -13,23 +12,47 @@ export class SearchService {
     query: string,
     filters: SearchFilters,
     pagination: PaginationInput,
-  ): Promise<SearchResult> {
-    let a: SearchResult;
-    return a;
+  ): Promise<SearchResult[]> {
+    const page = pagination.page;
+    const perPage = pagination.perPage;
+    const offset = (page - 1) * perPage;
+    const searchResults = await this.prismaService.searchResult.findMany({
+      where: {
+        description: {
+          contains: query,
+        },
+        title: {
+          contains: query,
+        },
+      },
+      skip: offset,
+      take: perPage,
+    });
+    //filters and pagination did not included
+    return searchResults;
   }
 
   async getSearchResult(id: number): Promise<SearchResult> {
-    let a: SearchResult;
-    return a;
+    const searchResult = await this.prismaService.searchResult.findUnique({
+      where: { id: id },
+    });
+    return searchResult;
   }
 
   async getUserSearchHistory(userId: number): Promise<SearchHistory[]> {
-    let a: SearchHistory[];
-    return a;
+    const foundUser = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        searchHistory: true,
+      },
+    });
+    return foundUser.searchHistory;
   }
 
-  async getPopularSearch(): Promise<String[]> {
-    let a: String[];
+  async getPopularSearch(): Promise<SearchResult[]> {
+    let a : SearchResult[] =[];
     return a;
   }
 
@@ -61,7 +84,7 @@ export class SearchService {
     return createdSearch;
   }
 
-  async updateSearchResult(input: UpdateSearchResult): Promise<SearchResult> {
+  async updateSearchResult(input: SearchResult): Promise<SearchResult> {
     const updatedSearchResult = await this.prismaService.searchResult.update({
       where: { id: input.id },
       data: {

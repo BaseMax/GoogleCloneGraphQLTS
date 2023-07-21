@@ -6,13 +6,14 @@ type search {
   id: ID!
   title: String!
   description: String!
+  url: String!
 }
 
 type Query {
-  search(query: String!, filters: SearchFilters!, pagination: PaginationInput!): search
-  getSearchResult(id: Float!): search
-  getUserSearchHistory(userId: Float!): search
-  getPopularSearch: search
+  search(query: String!, filters: SearchFilters!, pagination: PaginationInput!): [search!]!
+  getSearchResult(id: Float!): search!
+  getUserSearchHistory(userId: Float!): search!
+  getPopularSearch: search!
 }
 
 input SearchFilters {
@@ -20,17 +21,21 @@ input SearchFilters {
 }
 
 input PaginationInput {
-  name: Float!
+  perPage: Float!
+  page: Float!
 }
 
 type Mutation {
-  createUserSearchHistory(userId: Float!, query: String!): search
-  clearUserSearchHistory(userId: Float!): search
-  createSearchResult(title: String!, url: String!, description: String!): search
-  updateSearchResult(input: UpdateSearchResult!): search
-  deleteSearchResult(id: Float!): search
+  createUserSearchHistory(userId: Float!, query: String!): search!
+  clearUserSearchHistory(userId: Float!): search!
+  createSearchResult(title: String!, url: String!, description: String!): search!
+  updateSearchResult(input: SearchResult!): search!
+  deleteSearchResult(id: Float!): search!
 }
 
-input UpdateSearchResult {
-  id: Float!
+input SearchResult {
+  id: ID!
+  title: String!
+  description: String!
+  url: String!
 }

@@ -1,9 +1,16 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsNumber, IsUrl } from 'class-validator';
+import { Field, ID, InputType } from '@nestjs/graphql';
+import { IsNumber, IsString, IsDate } from 'class-validator';
 
 @InputType()
 export class SearchHistory {
-  @IsNumber()
+  @IsString()
   @Field()
-  name: number;
+  query: string;
+
+  @IsDate()
+  @Field()
+  createdAt: Date;
+
+  @Field(() => ID)
+  userId: number;
 }
