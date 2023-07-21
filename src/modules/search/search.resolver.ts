@@ -5,7 +5,9 @@ import { SearchFilters } from './dto/SearchFilters.dto';
 import { PaginationInput } from './dto/PaginationInput.dto';
 import { SearchResult } from './dto/SearchResult.dto';
 import { SearchHistory } from './dto/SearchHistory.dto';
+import { SearchHistoryModel } from './searchHistory.model';
 import { ParseIntPipe } from '@nestjs/common';
+import { CreateSearchResult } from './dto/createSearchResult.dto';
 
 @Resolver(() => Search)
 export class SearchResolver {
@@ -26,19 +28,19 @@ export class SearchResolver {
     return await this.searchService.getSearchResult(id);
   }
 
-  @Query(() => Search)
+  @Query(() => [SearchHistoryModel])
   async getUserSearchHistory(
     @Args('userId', ParseIntPipe) userId: number,
   ): Promise<SearchHistory[]> {
     return await this.searchService.getUserSearchHistory(userId);
   }
 
-  @Query(() => Search)
+  @Query(() => [Search])
   async getPopularSearch(): Promise<SearchResult[]> {
     return await this.searchService.getPopularSearch();
   }
 
-  @Mutation(() => Search)
+  @Mutation(() => SearchHistoryModel)
   async createUserSearchHistory(
     @Args('userId', ParseIntPipe) userId: number,
     @Args('query') query: string,
@@ -46,7 +48,7 @@ export class SearchResolver {
     return await this.searchService.createUserSearchHistory(userId, query);
   }
 
-  @Mutation(() => Search)
+  @Mutation(() => Boolean)
   async clearUserSearchHistory(
     @Args('userId', ParseIntPipe) userId: number,
   ): Promise<Boolean> {
@@ -55,7 +57,7 @@ export class SearchResolver {
 
   @Mutation(() => Search)
   async createSearchResult(
-    @Args('input') input : SearchResult
+    @Args('input') input: CreateSearchResult,
   ): Promise<SearchResult> {
     return await this.searchService.createSearchResult(input);
   }
@@ -68,7 +70,9 @@ export class SearchResolver {
   }
 
   @Mutation(() => Search)
-  async deleteSearchResult(@Args('id') id: number): Promise<Boolean> {
+  async deleteSearchResult(
+    @Args('id') id: number,
+  ): Promise<Boolean | SearchResult> {
     return await this.searchService.deleteSearchResult(id);
   }
 }

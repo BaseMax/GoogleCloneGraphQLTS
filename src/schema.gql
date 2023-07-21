@@ -2,22 +2,61 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type search {
-  id: ID!
-  title: String!
-  description: String!
-  url: String!
+type user {
+  id: ID
+  name: String
+  username: String
+  phonenumber: String
+  email: String
 }
 
+type search {
+  id: ID
+  title: String
+  description: String
+  url: String
+  rating: Float
+  location: String
+  category: String
+  price: Float
+}
+
+type SearchHistoryModel {
+  id: ID!
+  query: String
+  createdAt: DateTime
+  userId: ID
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
+  getUser(id: Float!): user!
   search(query: String!, filters: SearchFilters!, pagination: PaginationInput!): [search!]!
   getSearchResult(id: Float!): search!
-  getUserSearchHistory(userId: Float!): search!
-  getPopularSearch: search!
+  getUserSearchHistory(userId: Float!): [SearchHistoryModel!]!
+  getPopularSearch: [search!]!
 }
 
 input SearchFilters {
-  name: Float!
+  category: String
+  dateRange: DateRange
+  location: String
+  priceRange: PriceRange
+  rating: Int
+}
+
+input DateRange {
+  from: DateTime
+  to: DateTime
+}
+
+input PriceRange {
+  from: DateTime
+  to: DateTime
 }
 
 input PaginationInput {
@@ -26,16 +65,40 @@ input PaginationInput {
 }
 
 type Mutation {
-  createUserSearchHistory(userId: Float!, query: String!): search!
-  clearUserSearchHistory(userId: Float!): search!
-  createSearchResult(title: String!, url: String!, description: String!): search!
+  createUser(input: CreateUserDto!): user!
+  createUserSearchHistory(userId: Float!, query: String!): SearchHistoryModel!
+  clearUserSearchHistory(userId: Float!): Boolean!
+  createSearchResult(input: CreateSearchResult!): search!
   updateSearchResult(input: SearchResult!): search!
   deleteSearchResult(id: Float!): search!
+}
+
+input CreateUserDto {
+  name: String
+  phonenumber: String
+  email: String
+  username: String
+}
+
+input CreateSearchResult {
+  title: String!
+  description: String!
+  count: Float!
+  url: String!
+  rating: Float!
+  location: String!
+  category: String!
+  price: Float!
 }
 
 input SearchResult {
   id: ID!
   title: String!
   description: String!
+  count: Float!
   url: String!
+  rating: Float!
+  location: String!
+  category: String!
+  price: Float!
 }

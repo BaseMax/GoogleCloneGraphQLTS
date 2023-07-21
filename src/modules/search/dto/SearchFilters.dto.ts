@@ -9,22 +9,29 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 // DTO for date range
+
+@InputType()
 class DateRange {
+  @Field(() => Date, { nullable: true }) // Use @Field() with appropriate types for GraphQL
   @IsDate()
   @IsOptional()
   from?: Date;
 
+  @Field(() => Date, { nullable: true }) // Use @Field() with appropriate types for GraphQL
   @IsDate()
   @IsOptional()
   to?: Date;
 }
 
 // DTO for price range
+@InputType()
 class PriceRange {
+  @Field(() => Date, { nullable: true }) // Use @Field() with appropriate types for GraphQL
   @IsDate()
   @IsOptional()
   from?: number;
 
+  @Field(() => Date, { nullable: true }) // Use @Field() with appropriate types for GraphQL
   @IsDate()
   @IsOptional()
   to?: number;
@@ -37,7 +44,6 @@ export class SearchFilters {
   category?: string;
 
   @Field(() => DateRange, { nullable: true })
-  @Type(() => DateRange)
   @ValidateNested()
   dateRange?: DateRange;
 

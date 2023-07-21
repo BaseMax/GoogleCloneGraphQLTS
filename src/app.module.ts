@@ -9,6 +9,8 @@ import { UserModule } from './modules/user/user.module';
 import { SearchModule } from './modules/search/search.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+// import { ElasticModule } from './modules/elastic/elastic.module';
+// import { ElasticsearchModule } from '@nestjs/elasticsearch';
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import { ConfigModule } from '@nestjs/config';
     SearchModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    // ElasticModule,
+    // ElasticsearchModule.register({
+    //   node: 'http://localhost:9200', // Replace this with your ElasticSearch cluster URL
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],
