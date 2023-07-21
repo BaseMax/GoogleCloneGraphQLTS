@@ -25,9 +25,15 @@ model SearchHistory {
 }
 
 model SearchResult {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   url         String
   description String
-  count       Int
+  count       Int      @default(0)
+  rating      Int?      @default(0)
+  location    String?
+  category    String?
+  price       Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

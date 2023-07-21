@@ -55,11 +55,9 @@ export class SearchResolver {
 
   @Mutation(() => Search)
   async createSearchResult(
-    @Args('title') title: string,
-    @Args('url') url: string,
-    @Args('description') description: string,
+    @Args('input') input : SearchResult
   ): Promise<SearchResult> {
-    return await this.searchService.createSearchResult(title, url, description);
+    return await this.searchService.createSearchResult(input);
   }
 
   @Mutation(() => Search)

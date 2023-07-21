@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "SearchResult" ALTER COLUMN "category" DROP NOT NULL,
+ALTER COLUMN "location" DROP NOT NULL,
+ALTER COLUMN "price" DROP NOT NULL,
+ALTER COLUMN "rating" DROP NOT NULL;
