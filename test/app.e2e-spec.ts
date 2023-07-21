@@ -194,7 +194,6 @@ describe('AppController (e2e)', () => {
           }
         `,
         });
-      console.log('response: ', response.error);
       expect(response.status).toBe(200);
     });
 
@@ -212,6 +211,39 @@ describe('AppController (e2e)', () => {
                 createdAt
                 userId
             }
+          }
+        `,
+        });
+      expect(response.status).toBe(200);
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.errors[0].extensions.code).toBe('BAD_REQUEST');
+    });
+  });
+
+  describe('clearing user search history', () => {
+    it('should successfully clear user search history', async () => {
+      const id = 1;
+      const response = await request(app.getHttpServer())
+        .post(gql)
+        .send({
+          query: `
+          mutation {
+            clearUserSearchHistory(userId : ${id})
+          }
+        `,
+        });
+      console.log('response: ', response.error);
+      expect(response.status).toBe(200);
+    });
+
+    it('should not clear and throws a false if id is invalid', async () => {
+      const invalidId = 999;
+      const response = await request(app.getHttpServer())
+        .post(gql)
+        .send({
+          query: `
+          mutation {
+            clearUserSearchHistory(userId : ${invalidId})
           }
         `,
         });
